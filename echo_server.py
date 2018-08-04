@@ -9,16 +9,27 @@ PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
 #create the socket
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    print('[before binding]: s={}'.format(s))
+
     s.bind((HOST, PORT))
+    print('s.bind(({}, {}))'.format(HOST, PORT))
+    print('[after binding]: s={}'.format(s))
     
     s.listen()
+    print('s.listen()')
+
+    
     conn, addr = s.accept()
+    print('conn, addr = s.accept()')
+    print('conn={}\n, addr={}'.format(repr(conn), repr(addr)))
 
     with conn:
         print('Connected: ' + str(addr))
 
         while True:
-            data = conn.recv(1024)
+            print('Waiting for data')
+            data = conn.recv(1024) # Blocking
+            print('Recieved:', data)
             if not data:
                 break
             conn.sendall(data)
